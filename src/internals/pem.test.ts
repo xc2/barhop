@@ -1,10 +1,12 @@
-import { describe, test } from "vitest";
-import { keys } from "./__fixtures__/keys";
+import { describe, expect, test } from "vitest";
+import { PrivateKeyCaseNames, PrivateKeyCases } from "./__fixtures__/keys";
 import { parsePEM } from "./pem";
 
 describe("pem", () => {
-  test.each(keys)("parsePEM %s", (key) => {
+  test.each(PrivateKeyCaseNames)("parsePEM %s", (name) => {
+    const key = PrivateKeyCases[name];
     const { type, header, body } = parsePEM(key.pem);
-    console.log({ type, header, body });
+    expect(type).toBe(key.type);
+    expect(header).toEqual(key.header);
   });
 });

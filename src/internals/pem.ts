@@ -1,7 +1,13 @@
 export class PEMSyntaxError extends Error {}
 export class InvalidPemHeader extends Error {}
+export type PEMHeader = Record<string, string[]>;
+export interface PEM {
+  type: string;
+  header: PEMHeader;
+  body: Uint8Array;
+}
 
-export function parsePEM(pem: string) {
+export function parsePEM(pem: string): PEM {
   const parts = pem.split("-----");
   const typeLineIndex = parts.findIndex((part) => part.startsWith("BEGIN"));
   if (typeLineIndex === -1) {
@@ -22,7 +28,7 @@ export function parsePEM(pem: string) {
   };
 }
 function PEMHeaderParser() {
-  const header: Record<string, string[]> = {};
+  const header: PEMHeader = {};
   let currentKey: string | undefined = undefined;
   let currentValueLines: string[] = [];
 
