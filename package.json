@@ -1,0 +1,46 @@
+{
+  "name": "barhop",
+  "version": "0.0.0-PLACEHOLDER",
+  "type": "module",
+  "scripts": {
+    "build": "rslib build",
+    "prepare": "pnpm --package husky@9.1.1 dlx husky",
+    "vitest": "pnpm --package vitest@2.1.8 dlx vitest",
+    "test": "pnpm vitest",
+    "test:pkg": "node --test package.test.js",
+    "prepack": "pnpm test && pnpm build && pnpm test:pkg",
+    "deploy": "npm pack",
+    "docs": "pnpm --package typedoc-plugin-markdown@4.2.10 --package typedoc@0.26 dlx typedoc"
+  },
+  "module": "./dist/esm/index.js",
+  "main": "./dist/cjs/index.cjs",
+  "types": "./dist/types/index.d.ts",
+  "legacy": "./dist/legacy/index.js",
+  "files": ["dist"],
+  "exports": {
+    ".": {
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.cjs",
+      "legacy": "./dist/legacy/index.js",
+      "types": "./dist/types/index.d.ts"
+    },
+    "./package.json": "./package.json",
+    "./*.js": {
+      "import": "./dist/esm/*.js",
+      "require": "./dist/cjs/*.cjs",
+      "legacy": "./dist/legacy/*.js"
+    },
+    "./*.d.ts": "./dist/types/*.d.ts"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
+    "@rslib/core": "^0.1.5",
+    "@vitest/expect": "^2.1.8",
+    "@vitest/runner": "^2.1.8",
+    "typescript": "^5.7.2"
+  },
+  "nano-staged": {
+    "*.{js,ts,cts,mts}": "biome check --write --diagnostic-level=error --no-errors-on-unmatched"
+  },
+  "packageManager": "pnpm@9.12.3+sha512.cce0f9de9c5a7c95bef944169cc5dfe8741abfb145078c0d508b868056848a87c81e626246cb60967cbd7fd29a6c062ef73ff840d96b3c86c40ac92cf4a813ee"
+}

@@ -1,0 +1,6 @@
+{
+  "compilerOptions": {
+    "types": ["./vitest.d.ts", "./vitest"]
+  },
+  "include": ["tests", "**/*.test.ts", "./vitest.d.ts"]
+}
