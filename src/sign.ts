@@ -1,5 +1,5 @@
 import { parsePEM } from "./internals/pem";
-import { pkcs1To8 } from "./internals/rsa";
+import { pkcs1To8, validatePKCS1Or8 } from "./internals/rsa";
 
 export class EncryptedKeyNotSupported extends Error {
   constructor() {
@@ -7,8 +7,10 @@ export class EncryptedKeyNotSupported extends Error {
   }
 }
 export class UnsupportedKeyType extends Error {
-  constructor(type: string) {
-    super(`Only PKCS#1 and PKCS#8 private keys are supported. Received: ${type}`);
+  constructor(type?: string) {
+    super(
+      `Only PKCS#1 and PKCS#8 private keys are supported.` + (type ? ` Received: ${type}` : "")
+    );
   }
 }
 
@@ -30,13 +32,28 @@ export function toPKCS8(key: string | Uint8Array | ArrayBuffer): Uint8Array {
     } else {
       throw new UnsupportedKeyType(type);
     }
+  } else {
+    const view = new Uint8Array(key);
+    const pkcsType = validatePKCS1Or8(view);
+    if (pkcsType === "RSAPrivateKey") {
+      return pkcs1To8(view);
+    } else if (pkcsType === "PrivateKeyInfo") {
+      return view;
+    } else if (pkcsType === "EncryptedPrivateKeyInfo") {
+      throw new EncryptedKeyNotSupported();
+    } else {
+      throw new UnsupportedKeyType();
+    }
   }
-  key = new Uint8Array(key);
 }
 
 export function importKey(key: string | Uint8Array | ArrayBuffer) {
-  if (typeof key === "string") {
-    // PEM
-    const { type, header, body } = parsePEM(key);
-  }
+  const keyData = toPKCS8(key);
+  return crypto.subtle.importKey(
+    "pkcs8",
+    keyData,
+    { name: "RSASSA-PKCS1-v1_5", hash: "SHA-256" },
+    true,
+    ["sign"]
+  );
 }
