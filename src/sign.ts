@@ -1,5 +1,5 @@
-import { parsePEM } from "./internals/pem";
-import { pkcs1To8, validatePKCS1Or8 } from "./internals/rsa";
+import { pkcs1To8, validatePKCS1Or8 } from "./internals/crypto/rsa";
+import { parsePEM } from "./internals/encoding/pem";
 
 export class EncryptedKeyNotSupported extends Error {
   constructor() {

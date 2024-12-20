@@ -1,5 +1,5 @@
-import { buildBlock, getOID, iterBlock } from "./asn1";
-import { concatUint8 } from "./lang";
+import { buildBlock, getOID, iterBlock } from "src/internals/encoding/asn1";
+import { concatUint8 } from "src/internals/lang";
 
 export function pkcs1To8(pkcs1Body: Uint8Array) {
   /**
@@ -71,7 +71,8 @@ export function validatePKCS1Or8(
     // algorithm AlgorithmIdentifier SEQUENCE
     // PKCS#8
     const oid = getOID(second.value);
-    return oid === "1.2.840.113549.1.1.1" ? "PrivateKeyInfo" : false;
+    // the PrivateKey part is of PKCS#1 shape
+    return oid?.startsWith("1.2.840.113549.1.1.") ? "PrivateKeyInfo" : false;
   }
   if (second?.tag === 0x02) {
     // modulus   INTEGER,  -- n

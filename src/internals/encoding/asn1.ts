@@ -1,4 +1,4 @@
-import { concatUint8, toUint8Array } from "./lang";
+import { concatUint8, toUint8Array } from "src/internals/lang";
 
 export function parseASN1(
   data: Uint8Array | ArrayBuffer,

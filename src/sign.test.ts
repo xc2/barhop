@@ -1,6 +1,6 @@
+import { PrivateKeyCases } from "src/__fixtures__/keys";
 import { describe, expect, test } from "vitest";
-import { PrivateKeyCases } from "./internals/__fixtures__/keys";
-import { parsePEM } from "./internals/pem";
+import { parsePEM } from "./internals/encoding/pem";
 import { importKey } from "./sign";
 
 describe("import key", () => {

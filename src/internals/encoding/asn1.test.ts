@@ -1,5 +1,5 @@
+import { PrivateKeyCases } from "src/__fixtures__/keys";
 import { describe, expect, test } from "vitest";
-import { PrivateKeyCases } from "./__fixtures__/keys";
 import { buildBlock, iterBlock } from "./asn1";
 import { parsePEM } from "./pem";
 

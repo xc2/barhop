@@ -1,6 +1,8 @@
 {
   "compilerOptions": {
-    "types": ["./vitest.d.ts", "./vitest"]
+    "types": ["./vitest.d.ts"],
+    "baseUrl": ".",
+    "rootDir": "."
   },
-  "include": ["tests", "**/*.test.ts", "./vitest.d.ts"]
+  "include": ["tests", "**/*.test.ts"]
 }

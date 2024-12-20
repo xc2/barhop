@@ -1,6 +1,6 @@
+import { PrivateKeyCases } from "src/__fixtures__/keys";
+import { parsePEM } from "src/internals/encoding/pem";
 import { describe, expect, test } from "vitest";
-import { PrivateKeyCases } from "./__fixtures__/keys";
-import { parsePEM } from "./pem";
 import { pkcs1To8, validatePKCS1Or8 } from "./rsa";
 
 test("convert PKCS#1 to PKCS#8", () => {
