@@ -1,12 +1,14 @@
 interface RSAPrivateKey {
-  name: string;
   pem: string;
+  type: string;
+  header: Record<string, string[]>;
   passphrase?: string;
 }
 
-export const keys: RSAPrivateKey[] = [
-  {
-    name: "pkcs1 plain",
+export const PrivateKeyCases = {
+  "pkcs1 plain": {
+    type: "RSA PRIVATE KEY",
+    header: {},
     pem: `-----BEGIN RSA PRIVATE KEY-----
 MIIEogIBAAKCAQEAtcaaXV3vfUmiWZJnTOFRDkSu8b+RVLZxSiuGb4hvmRpTIbcw
 yZhVn6tBQPfbTQxjF47x56z2OBlCsGoqsvQii1c2pRCiLFS+9jYuLeSbJswCgFXP
@@ -35,9 +37,14 @@ hAwHAoGAI9qvwzBLivQRREUobpsB9c0Go1O0eo31ZgUll36kuDEHDFISqhVdj0ku
 yJJtqETUstU5okypWhYfSOn8a/T7Q452NW18Lw0p1+jiFf6zAXQ=
 -----END RSA PRIVATE KEY-----
 `,
-  },
-  {
-    name: "pkcs1 encrypted",
+  } as RSAPrivateKey,
+  "pkcs1 encrypted": {
+    type: "RSA PRIVATE KEY",
+    passphrase: "12345",
+    header: {
+      "Proc-Type": ["4", "ENCRYPTED"],
+      "DEK-Info": ["AES-128-CBC", "2FCEADE65A4A1286A51ADA044201F3F6"],
+    },
     pem: `-----BEGIN RSA PRIVATE KEY-----
 Proc-Type: 4,ENCRYPTED
 DEK-Info: AES-128-CBC,2FCEADE65A4A1286A51ADA044201F3F6
@@ -69,9 +76,10 @@ HAyBFCOzhUgBMVP8l7V+XXzSpj/f8EnZ5rkLV5sGD+7x7vah879a0SSuStQJLugr
 0YPSzLnsdSZmI0UhzALEz5xVyAVD0oEb22YQ1rkcjR5s5VKxR4ak4OGfaUyv10h4
 -----END RSA PRIVATE KEY-----
 `,
-  },
-  {
-    name: "pkcs8 plain",
+  } as RSAPrivateKey,
+  "pkcs8 plain": {
+    type: "PRIVATE KEY",
+    header: {},
     pem: `-----BEGIN PRIVATE KEY-----
 MIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQC1xppdXe99SaJZ
 kmdM4VEORK7xv5FUtnFKK4ZviG+ZGlMhtzDJmFWfq0FA99tNDGMXjvHnrPY4GUKw
@@ -101,9 +109,11 @@ t21ipgOqqg+UkMg+rQNvCna8ohn5yEZy+WHIkm2oRNSy1TmiTKlaFh9I6fxr9PtD
 jnY1bXwvDSnX6OIV/rMBdA==
 -----END PRIVATE KEY-----
 `,
-  },
-  {
-    name: "pkcs8 encrypted",
+  } as RSAPrivateKey,
+  "pkcs8 encrypted": {
+    type: "ENCRYPTED PRIVATE KEY",
+    passphrase: "12345",
+    header: {},
     pem: `-----BEGIN ENCRYPTED PRIVATE KEY-----
 MIIFNTBfBgkqhkiG9w0BBQ0wUjAxBgkqhkiG9w0BBQwwJAQQuXSYY/U9mxzBX2e2
 QL4+lwICCAAwDAYIKoZIhvcNAgkFADAdBglghkgBZQMEASoEEFRjdu4SeTbfmtMf
@@ -135,5 +145,7 @@ bVpxi5IrJP8zTJ6CHXHFyNkrYZy0MwS6q9AVrPHtKyacqM6L0coJ2zfSVgo3OV1C
 hImGQ/l2KwccUE1iZ/NwNtoF1wI3Nui7oyjEgODK7+B+p/bKG6I1ADE=
 -----END ENCRYPTED PRIVATE KEY-----
 `,
-  },
-];
+  } as RSAPrivateKey,
+};
+
+export const PrivateKeyCaseNames = Object.keys(PrivateKeyCases) as (keyof typeof PrivateKeyCases)[];
