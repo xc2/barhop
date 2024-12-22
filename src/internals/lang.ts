@@ -44,3 +44,17 @@ export function concatUint8(...arrays: (Uint8Array | ArrayBuffer)[]) {
   }
   return result;
 }
+
+/**
+ * base64 encoding chunk by chunk
+ * @param data
+ */
+export function toBase64(data: Uint8Array | ArrayBuffer) {
+  const view = toUint8Array(data);
+  let base64 = "";
+  for (let i = 0; i < view.byteLength; i += 3) {
+    const chunk = view.subarray(i, i + 3);
+    base64 += btoa(String.fromCharCode(...chunk));
+  }
+  return base64;
+}

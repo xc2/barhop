@@ -1,30 +1,24 @@
 import { PrivateKeyCases } from "src/__fixtures__/keys";
-import { parsePEM } from "src/internals/encoding/pem";
 import { describe, expect, test } from "vitest";
-import { pkcs1To8, validatePKCS1Or8 } from "./rsa";
+import { PrivateKeyType, pkcs1To8, validatePKCS1Or8 } from "./rsa";
 
 test("convert PKCS#1 to PKCS#8", () => {
-  const pkcs1 = parsePEM(PrivateKeyCases["pkcs1 plain"].pem);
-  const pkcs8Expected = parsePEM(PrivateKeyCases["pkcs8 plain"].pem);
-  const pkcs8 = pkcs1To8(pkcs1.body);
+  const pkcs8Expected = PrivateKeyCases["pkcs8 plain"].der;
+  const pkcs8 = pkcs1To8(PrivateKeyCases["pkcs1 plain"].der);
 
-  expect(pkcs8).toEqual(pkcs8Expected.body);
+  expect(pkcs8).toEqual(pkcs8Expected);
 });
 
 describe("key type detection", () => {
   test("PKCS#1", () => {
-    expect(validatePKCS1Or8(parsePEM(PrivateKeyCases["pkcs1 plain"].pem).body)).toBe(
-      "RSAPrivateKey"
-    );
+    expect(validatePKCS1Or8(PrivateKeyCases["pkcs1 plain"].der)).toBe(PrivateKeyType.LegacyRSA);
   });
   test("PKCS#8", () => {
-    expect(validatePKCS1Or8(parsePEM(PrivateKeyCases["pkcs8 plain"].pem).body)).toBe(
-      "PrivateKeyInfo"
-    );
+    expect(validatePKCS1Or8(PrivateKeyCases["pkcs8 plain"].der)).toBe(PrivateKeyType.PKCS8RSA);
   });
   test("PKCS#8 Encrypted", () => {
-    expect(validatePKCS1Or8(parsePEM(PrivateKeyCases["pkcs8 encrypted"].pem).body)).toBe(
-      "EncryptedPrivateKeyInfo"
+    expect(validatePKCS1Or8(PrivateKeyCases["pkcs8 encrypted"].der)).toBe(
+      PrivateKeyType.EncryptedPKCS8RSA
     );
   });
 });

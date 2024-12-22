@@ -8,5 +8,8 @@ describe("pem", () => {
     const { type, header, body } = parsePEM(key.pem);
     expect(type).toBe(key.type);
     expect(header).toEqual(key.header);
+    if (key.der.byteLength && type !== "ENCRYPTED PRIVATE KEY") {
+      expect(body).toEqual(key.der);
+    }
   });
 });
