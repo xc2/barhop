@@ -10,9 +10,9 @@
     "noImplicitAny": true,
     "skipLibCheck": true,
     "target": "ES2022",
-    "types": ["./vitest.d.ts"],
     "baseUrl": ".",
-    "rootDir": "."
+    "rootDir": ".",
+    "types": ["vitest-types", "node"]
   },
   "include": ["src"]
 }

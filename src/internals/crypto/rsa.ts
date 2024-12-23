@@ -1,6 +1,8 @@
 import { buildBlock, getOID, iterBlock } from "src/internals/encoding/asn1";
 import { concatUint8 } from "src/internals/lang";
+import { PrivateKeyType, type PrivateKeyTypes } from "./constants";
 
+export * from "./constants";
 export function pkcs1To8(pkcs1Body: Uint8Array) {
   /**
    * PKCS#8 wrapper ASN.1 structure
@@ -47,9 +49,7 @@ export function pkcs1To8(pkcs1Body: Uint8Array) {
  * @param der
  * @see https://mbed-tls.readthedocs.io/en/latest/kb/cryptography/asn1-key-structures-in-der-and-pem/
  */
-export function validatePKCS1Or8(
-  der: Uint8Array
-): false | "RSAPrivateKey" | "PrivateKeyInfo" | "EncryptedPrivateKeyInfo" {
+export function validatePKCS1Or8(der: Uint8Array): false | PrivateKeyTypes {
   const derIter = iterBlock(der);
   const root = derIter.next().value;
   if (root?.tag !== 0x30) {
@@ -60,7 +60,7 @@ export function validatePKCS1Or8(
   if (first?.tag === 0x30) {
     // The first item of EncryptedPrivateKeyInfo is encryptionAlgorithm SEQUENCE
     const oid = first.sub().next().value;
-    return oid?.tag === 0x06 ? "EncryptedPrivateKeyInfo" : false;
+    return oid?.tag === 0x06 ? PrivateKeyType.EncryptedPKCS8RSA : false;
   }
   if (first?.tag !== 0x02) {
     // The first item of PKCS#1 and PKCS#8 is version INTEGER
@@ -72,12 +72,12 @@ export function validatePKCS1Or8(
     // PKCS#8
     const oid = getOID(second.value);
     // the PrivateKey part is of PKCS#1 shape
-    return oid?.startsWith("1.2.840.113549.1.1.") ? "PrivateKeyInfo" : false;
+    return oid?.startsWith("1.2.840.113549.1.1.") ? PrivateKeyType.PKCS8RSA : false;
   }
   if (second?.tag === 0x02) {
     // modulus   INTEGER,  -- n
     // PKCS#1
-    return "RSAPrivateKey";
+    return PrivateKeyType.LegacyRSA;
   }
   return false;
 }

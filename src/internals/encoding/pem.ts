@@ -1,5 +1,5 @@
-export class PEMSyntaxError extends Error {}
-export class InvalidPemHeader extends Error {}
+import { InvalidPemHeader, PEMSyntaxError } from "./exceptions";
+
 export type PEMHeader = Record<string, string[]>;
 export interface PEM {
   type: string;

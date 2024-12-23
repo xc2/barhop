@@ -6,7 +6,7 @@
     "build": "rslib build",
     "prepare": "pnpm --package husky@9.1.1 dlx husky",
     "vitest": "pnpm --package vitest@2.1.8 dlx vitest",
-    "test": "pnpm vitest",
+    "test": "pnpm vitest --run",
     "test:pkg": "node --test package.test.js",
     "prepack": "pnpm test && pnpm build && pnpm test:pkg",
     "deploy": "npm pack",
@@ -35,9 +35,9 @@
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
     "@rslib/core": "^0.1.5",
-    "@vitest/expect": "^2.1.8",
-    "@vitest/runner": "^2.1.8",
-    "typescript": "^5.7.2"
+    "@types/node": "^22.10.2",
+    "typescript": "^5.7.2",
+    "vitest-types": "^0.1.0"
   },
   "nano-staged": {
     "*.{js,ts,cts,mts}": "biome check --write --diagnostic-level=error --no-errors-on-unmatched"

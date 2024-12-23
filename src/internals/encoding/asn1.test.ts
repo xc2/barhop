@@ -1,11 +1,10 @@
 import { PrivateKeyCases } from "src/__fixtures__/keys";
 import { describe, expect, test } from "vitest";
 import { buildBlock, iterBlock } from "./asn1";
-import { parsePEM } from "./pem";
 
 describe("e2e", () => {
   test("pkcs8", () => {
-    const der = parsePEM(PrivateKeyCases["pkcs8 plain"].pem).body;
+    const der = PrivateKeyCases["pkcs8 plain"].der;
     const derIter = iterBlock(der);
     const first = derIter.next().value;
     expect(first).toBeDefined();
@@ -17,7 +16,7 @@ describe("e2e", () => {
     expect(version!.value[0]).toBe(0);
   });
   test("pkcs1", () => {
-    const der = parsePEM(PrivateKeyCases["pkcs1 plain"].pem).body;
+    const der = PrivateKeyCases["pkcs1 plain"].der;
     const derIter = iterBlock(der);
     const seq = derIter.next().value;
     expect(seq).toBeDefined();
