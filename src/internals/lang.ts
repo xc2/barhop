@@ -48,13 +48,22 @@ export function concatUint8(...arrays: (Uint8Array | ArrayBuffer)[]) {
 /**
  * base64 encoding chunk by chunk
  * @param data
+ * @param maxColumn
  */
-export function toBase64(data: Uint8Array | ArrayBuffer) {
+export function toBase64(data: Uint8Array | ArrayBuffer, maxColumn = Infinity) {
   const view = toUint8Array(data);
-  let base64 = "";
+  const lines = [];
+  let current = "";
   for (let i = 0; i < view.byteLength; i += 3) {
     const chunk = view.subarray(i, i + 3);
-    base64 += btoa(String.fromCharCode(...chunk));
+    current += btoa(String.fromCharCode(...chunk));
+    if (current.length > maxColumn) {
+      lines.push(current.slice(0, maxColumn));
+      current = current.slice(maxColumn);
+    }
   }
-  return base64;
+  if (current) {
+    lines.push(current);
+  }
+  return lines.join("\n");
 }

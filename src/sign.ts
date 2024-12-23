@@ -37,7 +37,7 @@ export function toPKCS8(key: string | Uint8Array | ArrayBuffer): Uint8Array {
   }
 }
 
-export function importKey(key: string | Uint8Array | ArrayBuffer) {
+export async function importKey(key: string | Uint8Array | ArrayBuffer) {
   const keyData = toPKCS8(key);
   return crypto.subtle.importKey(
     "pkcs8",
@@ -53,22 +53,23 @@ export function importKey(key: string | Uint8Array | ArrayBuffer) {
 export interface DataToSign {
   method: string;
   path: string;
-  body: string | ArrayBuffer | Uint8Array | null;
+  body?: string | ArrayBuffer | Uint8Array | null;
   userId: string | number;
   time?: Date;
   apiVer?: string | number;
 }
 export function canonicalizeMethod(method: string | undefined) {
-  return (method ?? "GET").toUpperCase();
+  return (method || "GET").toUpperCase();
 }
 
 export function canonicalizePath(path: string | undefined) {
-  let { pathname } = new URL(path ?? "/", "https://example.com");
+  path = (path || "/").replace(/^\/+/g, "/");
+  let { pathname } = new URL(path, "https://example.com");
   pathname = pathname.replace(/^\/+/g, "/");
   pathname = pathname.replace(/\/+$/g, "");
   return pathname;
 }
-export function hashBody(
+export async function hashBody(
   body: DataToSign["body"] | undefined,
   digest: "SHA-1" | "SHA-256" = "SHA-256"
 ) {
@@ -80,6 +81,9 @@ export function canonicalizeTime(time: Date | undefined) {
   time = time ?? new Date();
   return time.toISOString().replace(/\.\d{3}Z$/, "Z");
 }
+export function canonicalizeUserId(userId: string | number) {
+  return `${userId ?? ""}`;
+}
 export function canonicalizeData(data: DataToSign): [string, string | PromiseLike<string>][] {
   return [
     ["Method", canonicalizeMethod(data.method)],
@@ -87,33 +91,29 @@ export function canonicalizeData(data: DataToSign): [string, string | PromiseLik
     ["X-Ops-Content-Hash", hashBody(data.body)],
     ["X-Ops-Sign", "version=1.3"], // Only version 1.3 is supported as Web CRYPTO API does not support sign without digest
     ["X-Ops-Timestamp", canonicalizeTime(data.time)],
-    ["X-Ops-UserId", String(data.userId)],
+    ["X-Ops-UserId", canonicalizeUserId(data.userId)],
     ["X-Ops-Server-API-Version", `${data.apiVer ?? 0}`],
   ];
 }
 
-export function sign(data: DataToSign, key: CryptoKey) {
-  const raw = (async () => {
-    const canonicalized = canonicalizeData(data);
-    const headers: Record<string, string> = {};
-    let dataToSign = "";
-    for (const [key, value] of canonicalized) {
-      const v = typeof value === "string" ? value : await value;
-      headers[key] = v;
-      dataToSign += `${key}:${v}\n`;
-    }
-    return { headers, dataToSign };
-  })();
-
-  return {
-    headers: raw.then((r) => r.headers),
-    signature: raw.then((r) =>
-      crypto.subtle.sign(
-        { name: "RSASSA-PKCS1-v1_5", hash: "SHA-256" },
-        key,
-        toUint8Array(r.dataToSign)
-      )
-    ),
-  };
+export async function sign(data: DataToSign, key: CryptoKey | PromiseLike<CryptoKey>) {
+  const canonicalized = canonicalizeData(data);
+  const headers: Record<string, string> = {};
+  const dataToSign = [];
+  for (const [key, value] of canonicalized) {
+    const v = typeof value === "string" ? value : await value;
+    headers[key] = v;
+    dataToSign.push(`${key}:${v}`);
+  }
+  const signature = await crypto.subtle.sign(
+    { name: "RSASSA-PKCS1-v1_5", hash: "SHA-256" },
+    await key,
+    toUint8Array(dataToSign.join("\n"))
+  );
+  const base64Signature = toBase64(signature, 60).split("\n");
+  for (let i = 0; i < base64Signature.length; i++) {
+    headers[`X-Ops-Authorization-${i + 1}`] = base64Signature[i];
+  }
+  return headers;
 }
 // MARK: - sign -

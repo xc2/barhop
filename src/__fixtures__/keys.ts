@@ -29,7 +29,7 @@ export const PrivateKeyCases = {
     passphrase: "12345",
     header: {
       "Proc-Type": ["4", "ENCRYPTED"],
-      "DEK-Info": ["AES-128-CBC", "0BE5B7956C55B9940FB4C945AD49610B"],
+      "DEK-Info": ["AES-128-CBC", "764CA01ABF6E982C43EF3C77B26D7A5F"],
     },
     pem: PKCS1EncryptedPEM,
     der: new Uint8Array(),
@@ -39,14 +39,14 @@ export const PrivateKeyCases = {
     header: {},
     pem: PKCS8PlainPEM,
     der: fromBase64(PKCS8PlainDer),
-  } as RSAPrivateKey,
+  } satisfies RSAPrivateKey,
   "pkcs8 encrypted": {
     type: "ENCRYPTED PRIVATE KEY",
     passphrase: "12345",
     header: {},
     pem: PKCS8EncryptedPEM,
     der: fromBase64(PKCS8EncryptedDer), // todo iv is not same as pem
-  } as RSAPrivateKey,
+  } satisfies RSAPrivateKey,
 };
 
 export const PrivateKeyCaseNames = Object.keys(PrivateKeyCases) as (keyof typeof PrivateKeyCases)[];
