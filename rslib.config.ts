@@ -36,7 +36,6 @@ export default defineConfig({
       },
       dts: {
         bundle: false,
-
         distPath: "dist/types",
       },
     },
