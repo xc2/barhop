@@ -151,7 +151,7 @@ describe("sign", () => {
     apiVer: 1,
   };
   test("should sign correctly and return headers", async () => {
-    await expect(sign(data, key)).resolves.toEqual({
+    await expect(sign(key, data)).resolves.toEqual({
       Method: "POST",
       Path: "/organizations/clownco",
       "X-Ops-Content-Hash": "hDlKNZhIhgso3Fs0S0pZwJ0xyBWtR1RBaeHs1DrzOho=",

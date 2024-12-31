@@ -14,5 +14,5 @@
     "rootDir": ".",
     "types": ["vitest-types", "node"]
   },
-  "include": ["src"]
+  "include": ["src", "rslib.config.ts"]
 }
