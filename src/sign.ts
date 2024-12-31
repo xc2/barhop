@@ -96,7 +96,7 @@ export function canonicalizeData(data: DataToSign): [string, string | PromiseLik
   ];
 }
 
-export async function sign(data: DataToSign, key: CryptoKey | PromiseLike<CryptoKey>) {
+export async function sign(key: CryptoKey | PromiseLike<CryptoKey>, data: DataToSign) {
   const canonicalized = canonicalizeData(data);
   const headers: Record<string, string> = {};
   const dataToSign = [];

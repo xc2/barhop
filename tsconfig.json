@@ -11,8 +11,7 @@
     "skipLibCheck": true,
     "target": "ES2022",
     "baseUrl": ".",
-    "rootDir": ".",
     "types": ["vitest-types", "node"]
   },
-  "include": ["src"]
+  "include": ["src", "rslib.config.ts"]
 }

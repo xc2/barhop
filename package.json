@@ -30,6 +30,13 @@
       "require": "./dist/cjs/*.cjs",
       "legacy": "./dist/legacy/*.js"
     },
+    "./*.cjs": {
+      "require": "./dist/cjs/*.cjs"
+    },
+    "./*.mjs": {
+      "import": "./dist/esm/*.js",
+      "legacy": "./dist/legacy/*.js"
+    },
     "./*.d.ts": "./dist/types/*.d.ts"
   },
   "devDependencies": {

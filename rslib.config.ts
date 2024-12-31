@@ -3,8 +3,9 @@ import { type LibConfig, defineConfig } from "@rslib/core";
 const common = {
   source: {
     entry: {
-      main: ["src/**/*.ts"],
+      main: ["src/**/*.ts", "!**/__*__/**", "!**/*.test.*"],
     },
+    tsconfigPath: "./tsconfig.build.json",
   },
   output: {
     distPath: { root: "dist" },
