@@ -28,14 +28,17 @@
     "./*.js": {
       "import": "./dist/esm/*.js",
       "require": "./dist/cjs/*.cjs",
-      "legacy": "./dist/legacy/*.js"
+      "legacy": "./dist/legacy/*.js",
+      "types": "./dist/types/*.d.ts"
     },
     "./*.cjs": {
-      "require": "./dist/cjs/*.cjs"
+      "require": "./dist/cjs/*.cjs",
+      "types": "./dist/types/*.d.ts"
     },
     "./*.mjs": {
       "import": "./dist/esm/*.js",
-      "legacy": "./dist/legacy/*.js"
+      "legacy": "./dist/legacy/*.js",
+      "types": "./dist/types/*.d.ts"
     },
     "./*.d.ts": "./dist/types/*.d.ts"
   },
